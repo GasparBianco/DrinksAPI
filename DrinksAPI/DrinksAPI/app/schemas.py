@@ -1,51 +1,57 @@
 from pydantic import BaseModel
 from typing import List
 
-class GlassDB(BaseModel):
-
-    id: int
+class GlassBase(BaseModel):
     glass: str
 
-    class Config:
-        orm_mode=True
+class GlassCreate(GlassBase):
+    pass
 
-class CategoryDB(BaseModel):
-
+class Glass(GlassBase):
     id: int
+
+    class Config:
+        orm_mode = True
+
+class CategoryBase(BaseModel):
     category: str
-    class Config:
-        orm_mode=True
 
-class IngredientDB(BaseModel):
+class CategoryCreate(CategoryBase):
+    pass
 
+class Category(CategoryBase):
     id: int
+
+    class Config:
+        orm_mode = True
+
+class IngredientBase(BaseModel):
     ingredient: str
-    class Config:
-        orm_mode=True
 
-class CocktailDB(BaseModel):
+class IngredientCreate(IngredientBase):
+    pass
 
+class Ingredient(IngredientBase):
     id: int
+
+    class Config:
+        orm_mode = True
+
+class CocktailBase(BaseModel):
     cocktail: str
     instruction: str
     id_glass: int
     id_category: int
-    class Config:
-        orm_mode=True
+    ingredients: List[int]  # Lista de IDs de ingredientes en lugar de objetos completos
 
-class RelationCocktailIngredientDB(BaseModel):
+class CocktailCreate(CocktailBase):
+    pass
 
-    idCocktail: int
-    idIngredient: int
-    measure: str
-    class Config:
-        orm_mode=True
-
-class Cocktail(BaseModel):
-
+class Cocktail(CocktailBase):
     id: int
-    cocktail: str
-    instruction: str
-    glass: GlassDB
-    category: CategoryDB
-    ingredient: List[IngredientDB]
+    glass: Glass
+    category: Category
+    ingredients: List[Ingredient] = []  # Puedes dejarlo vacío si no necesitas cargar ingredientes completos
+
+    class Config:
+        orm_mode = True
