@@ -1,57 +1,39 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
+    
 
-class GlassBase(BaseModel):
+class Glass(BaseModel):
+    id: int
     glass: str
 
-class GlassCreate(GlassBase):
-    pass
-
-class Glass(GlassBase):
-    id: int
-
     class Config:
-        orm_mode = True
+        orm_mode = True    
 
-class CategoryBase(BaseModel):
+
+class Category(BaseModel):
+    id: int
     category: str
 
-class CategoryCreate(CategoryBase):
-    pass
-
-class Category(CategoryBase):
-    id: int
-
     class Config:
         orm_mode = True
 
-class IngredientBase(BaseModel):
+class Ingredient(BaseModel):
+    id: int
     ingredient: str
 
-class IngredientCreate(IngredientBase):
-    pass
-
-class Ingredient(IngredientBase):
-    id: int
-
     class Config:
-        orm_mode = True
+        orm_mode = True 
 
-class CocktailBase(BaseModel):
-    cocktail: str
-    instruction: str
-    id_glass: int
-    id_category: int
-    ingredients: List[int]  # Lista de IDs de ingredientes en lugar de objetos completos
-
-class CocktailCreate(CocktailBase):
-    pass
-
-class Cocktail(CocktailBase):
+class Cocktail(BaseModel):
     id: int
+    cocktail: str
+    instruction: Optional[str]
     glass: Glass
     category: Category
-    ingredients: List[Ingredient] = []  # Puedes dejarlo vacío si no necesitas cargar ingredientes completos
+    ingredients: List[Ingredient] = []
 
     class Config:
         orm_mode = True
+
+class CocktailList(BaseModel):
+    cocktails: List[Cocktail] = []

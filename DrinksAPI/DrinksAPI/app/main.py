@@ -15,10 +15,6 @@ app = FastAPI()
 def main():
     return RedirectResponse(url="/docs/")
 
-
-
-
-
 def get_db():
     db = SessionLocal()
     try:
@@ -26,13 +22,30 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/cocktail/", response_model=service.Cocktail)
-def getCocktailByID(db: Session = Depends(get_db)):
-    cocktail = db.query(Cocktail).filter(Cocktail.id == 2).first()
+@app.get("/cocktail/{id}", response_model=schemas.Cocktail)
+def getCocktailByID(id:int, db: Session = Depends(get_db)):
+    cocktail = db.query(Cocktail).filter(Cocktail.id == id).first()
+    if cocktail is None:
+        raise HTTPException(status_code=404, detail="Cocktail not found")
+    
     return cocktail
+    
+    
+@app.get("/cocktail/page/{page}", response_model=schemas.CocktailList)
+def getCocktailByID(page:int, db: Session = Depends(get_db)):
+    if page <0:
+        raise HTTPException(status_code=404, detail="Page cant be less than 0")
 
+    cocktails = []
+    for i in range(0,10):
+        id = 10 * page + i + 1
+        cocktail = db.query(Cocktail).filter(Cocktail.id == id).first()
+        if cocktail is not None:
+            cocktails.append(cocktail)    
 
-async def CocktailByID(id):
-    return getCocktailByID(id)
-
+    if cocktails:
+        return {'cocktails': cocktails}
+    raise HTTPException(status_code=404, detail="Page was to big")
+    
+    
 
