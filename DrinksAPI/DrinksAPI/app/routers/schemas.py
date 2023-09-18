@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import List, Optional
     
 
-class Glass(BaseModel):
+class GlassBase(BaseModel):
     id: int
     glass: str
 
@@ -10,10 +10,10 @@ class Glass(BaseModel):
         orm_mode = True   
 
 class GlassList(BaseModel):
-    glasses: List[Glass] = []
+    glasses: List[GlassBase] = []
 
 
-class Category(BaseModel):
+class CategoryBase(BaseModel):
     id: int
     category: str
 
@@ -21,9 +21,9 @@ class Category(BaseModel):
         orm_mode = True
 
 class CategoryList(BaseModel):
-    categories: List[Category] = []
+    categories: List[CategoryBase] = []
 
-class Ingredient(BaseModel):
+class IngredientBase(BaseModel):
     id: int
     ingredient: str
 
@@ -31,18 +31,18 @@ class Ingredient(BaseModel):
         orm_mode = True 
 
 class IngredientList(BaseModel):
-    ingredients: List[Ingredient] = []
+    ingredients: List[IngredientBase] = []
 
-class Cocktail(BaseModel):
+class CocktailBase(BaseModel):
     id: int
     cocktail: str
     instruction: Optional[str]
-    glass: Glass
-    category: Category
-    ingredients: List[Ingredient] = []
+    glass: GlassBase
+    category: CategoryBase
+    ingredients: List[IngredientBase] = []
 
     class Config:
         orm_mode = True
 
 class CocktailList(BaseModel):
-    cocktails: List[Cocktail] = []
+    cocktails: List[CocktailBase] = []

@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Table
-from db_config import Base
+from .db_config import Base
 from sqlalchemy.orm import relationship
 
 relationCocktailIngredient = Table(
