@@ -7,7 +7,10 @@ class Glass(BaseModel):
     glass: str
 
     class Config:
-        orm_mode = True    
+        orm_mode = True   
+
+class GlassList(BaseModel):
+    glasses: List[Glass] = []
 
 
 class Category(BaseModel):
@@ -17,12 +20,18 @@ class Category(BaseModel):
     class Config:
         orm_mode = True
 
+class CategoryList(BaseModel):
+    categories: List[Category] = []
+
 class Ingredient(BaseModel):
     id: int
     ingredient: str
 
     class Config:
         orm_mode = True 
+
+class IngredientList(BaseModel):
+    ingredients: List[Ingredient] = []
 
 class Cocktail(BaseModel):
     id: int
