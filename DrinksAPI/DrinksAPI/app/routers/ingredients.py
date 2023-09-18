@@ -1,14 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from .models import Ingredient
 from .schemas import IngredientBase, IngredientList
 from .db_config import *
 from sqlalchemy.orm import Session
-from fastapi import Depends
+
 
 router = APIRouter()
 
 @router.get("/ingredient/{id}", response_model=IngredientBase)
-def getIngredientByID(id:int, db: Session = Depends(get_db)):
+async def getIngredientByID(id:int, db: Session = Depends(get_db)):
     ingredient = db.query(Ingredient).filter(Ingredient.id == id).first()
     if ingredient is None:
         raise HTTPException(status_code=404, detail="Ingredient not found")
@@ -16,7 +16,7 @@ def getIngredientByID(id:int, db: Session = Depends(get_db)):
     return ingredient
 
 @router.get("/ingredient/page/{page}", response_model=IngredientList)
-def getIngredientPage(page:int, db: Session = Depends(get_db)):
+async def getIngredientPage(page:int, db: Session = Depends(get_db)):
     if page <0:
         raise HTTPException(status_code=404, detail="Page cant be less than 0")
 

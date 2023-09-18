@@ -1,14 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from .models import Cocktail
 from .schemas import CocktailBase, CocktailList
 from .db_config import *
 from sqlalchemy.orm import Session
-from fastapi import Depends
+
 
 router = APIRouter()
 
 @router.get("/cocktail/{id}", response_model=CocktailBase)
-def getCocktailByID(id:int, db: Session = Depends(get_db)):
+async def getCocktailByID(id:int, db: Session = Depends(get_db)):
     cocktail = db.query(Cocktail).filter(Cocktail.id == id).first()
     if cocktail is None:
         raise HTTPException(status_code=404, detail="Cocktail not found")
@@ -17,7 +17,7 @@ def getCocktailByID(id:int, db: Session = Depends(get_db)):
     
     
 @router.get("/cocktail/page/{page}", response_model=CocktailList)
-def getCocktailByID(page:int, db: Session = Depends(get_db)):
+async def getCocktailByID(page:int, db: Session = Depends(get_db)):
     if page <0:
         raise HTTPException(status_code=404, detail="Page cant be less than 0")
 
