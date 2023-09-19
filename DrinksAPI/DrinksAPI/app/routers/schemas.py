@@ -33,16 +33,29 @@ class IngredientBase(BaseModel):
 class IngredientList(BaseModel):
     ingredients: List[IngredientBase] = []
 
+class AssociationBase(BaseModel):
+    measure: Optional[str]
+    ingredient: IngredientBase
+    
 class CocktailBase(BaseModel):
     id: int
     cocktail: str
     instruction: Optional[str]
     glass: GlassBase
     category: CategoryBase
-    ingredients: List[IngredientBase] = []
+    ingredients: List[AssociationBase] = []
 
     class Config:
         orm_mode = True
 
+class CocktailDB(BaseModel):
+    cocktail: str
+    instruction: Optional[str]
+    glass: int
+    category: int
+    ingredients: List[int] = []
+
+
 class CocktailList(BaseModel):
     cocktails: List[CocktailBase] = []
+

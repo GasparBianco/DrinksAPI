@@ -30,3 +30,40 @@ async def getIngredientPage(page:int, db: Session = Depends(get_db)):
     if ingredients:
         return {'ingredients': ingredients}
     raise HTTPException(status_code=404, detail="Page was to big")
+
+@router.post("/ingredient/", response_model=IngredientBase, status_code=201)
+async def createIngredient(ingredient: str, db: Session = Depends(get_db)):
+    if db.query(Ingredient).filter(Ingredient.ingredient == ingredient).first():
+        raise HTTPException(status_code=404, detail="Ingredient already exist")
+    
+    new_ingredient = Ingredient(category=ingredient)
+    db.add(new_ingredient)
+    db.commit()
+    db.refresh(new_ingredient)
+    return new_ingredient
+
+def deleteIngredientById(id: int, db: Session):
+    ingredient = db.query(Ingredient).filter(Ingredient.id == id).first()
+    if ingredient is None:
+        raise HTTPException(status_code=404, detail="Ingredient not found")
+    
+    db.delete(ingredient)
+    db.commit()
+    return {"detail": "Ingredient deleted successfully"}
+
+@router.delete("/ingredient/{ingredient}")
+async def deleteIngredientByName(ingredient: str, db: Session = Depends(get_db)):
+    try:
+        id = int(ingredient)
+        return deleteIngredientById(id, db)
+    except:
+        Exception
+
+
+    ingredient = db.query(Ingredient).filter(Ingredient.ingredient == ingredient).first()
+    if ingredient is None:
+        raise HTTPException(status_code=404, detail="Ingrdient not found")
+    
+    db.delete(ingredient)
+    db.commit()
+    return {"detail": "Ingredient deleted successfully"}
