@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from .models import Cocktail, Association
-from .schemas import CocktailBase, CocktailList, CocktailDB, AssociationBase
+from .schemas import CocktailBase, CocktailList, CocktailDB
 from .db_config import *
 from sqlalchemy.orm import Session
 
@@ -42,11 +42,8 @@ async def getCocktailByID(page:int, db: Session = Depends(get_db)):
 @router.post("/cocktail/", response_model=CocktailBase, status_code=201)
 async def createCocktail(cocktail: CocktailDB, db: Session = Depends(get_db)):
     if db.query(Cocktail).filter(Cocktail.cocktail == cocktail.cocktail).first():
-        raise HTTPException(status_code=404, detail="Cocktail already exist")
-    print(cocktail)
-    new_cocktail = Cocktail(cocktail= cocktail.cocktail,
-                            glass= cocktail.glass,
-                            ingredients=cocktail.ingredients)
+        raise HTTPException(status_code=404, detail="Cocktail already exist")    
+    new_cocktail = Cocktail(**cocktail.dict())
     db.add(new_cocktail)
     db.commit()
     db.refresh(new_cocktail)
@@ -77,3 +74,8 @@ async def deleteCocktailByName(cocktail: str, db: Session = Depends(get_db)):
     db.delete(cocktail)
     db.commit()
     return {"detail": "Cocktail deleted successfully"}
+
+@router.get("/prueba/", response_model=CocktailDB)
+async def prueba(db: Session = Depends(get_db)):
+    cocktail = db.query(Cocktail).first()
+    return cocktail

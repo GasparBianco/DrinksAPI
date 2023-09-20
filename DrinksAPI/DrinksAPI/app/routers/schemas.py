@@ -4,56 +4,74 @@ from typing import List, Optional
 
 class GlassBase(BaseModel):
     id: int
-    glass: str
+    
 
     class Config:
-        orm_mode = True   
+        orm_mode = True
+
+class GlassFull(GlassBase):
+    glass: str
 
 class GlassList(BaseModel):
-    glasses: List[GlassBase] = []
+    glasses: List[GlassFull] = []
 
 
 class CategoryBase(BaseModel):
     id: int
-    category: str
 
     class Config:
         orm_mode = True
+
+class CategoryFull(CategoryBase):
+    category:str
 
 class CategoryList(BaseModel):
     categories: List[CategoryBase] = []
 
 class IngredientBase(BaseModel):
     id: int
-    ingredient: str
+
 
     class Config:
         orm_mode = True 
 
+class IngredientFull(IngredientBase):
+    ingredient: str
+
 class IngredientList(BaseModel):
-    ingredients: List[IngredientBase] = []
+    ingredients: List[IngredientFull] = []
 
 class AssociationBase(BaseModel):
     measure: Optional[str]
     ingredient: IngredientBase
     
+    class Config:
+        orm_mode = True
+
+class AssciationFull(AssociationBase):
+    ingredient: IngredientFull
+
 class CocktailBase(BaseModel):
     id: int
     cocktail: str
     instruction: Optional[str]
-    glass: GlassBase
-    category: CategoryBase
+    glass: GlassFull
+    category: CategoryFull
     ingredients: List[AssociationBase] = []
 
     class Config:
         orm_mode = True
 
+class IngredientCocktail(BaseModel):
+    id_ingredient: IngredientBase
+    measure: Optional[str]
+
 class CocktailDB(BaseModel):
     cocktail: str
     instruction: Optional[str]
-    glass: int
-    category: int
-    ingredients: List[int] = []
+    glass: GlassBase
+    category: CategoryBase
+    ingredients: List[AssociationBase] = []
 
 
 class CocktailList(BaseModel):
