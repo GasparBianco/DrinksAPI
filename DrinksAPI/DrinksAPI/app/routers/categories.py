@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from .models import Category
-from .schemas import CategoryList, CategoryBase
+from .schemas import CategoryList, CategoryBase, CategoryCreate
 from .db_config import *
 from sqlalchemy.orm import Session
 
@@ -23,11 +23,11 @@ async def getAllCategories(db: Session = Depends(get_db)):
     return {'categories': category}
 
 @router.post("/category/", response_model=CategoryBase, status_code=201)
-async def create_category_endpoint(category: str, db: Session = Depends(get_db)):
-    if db.query(Category).filter(Category.category == category).first():
+async def create_category_endpoint(category: CategoryCreate, db: Session = Depends(get_db)):
+    if db.query(Category).filter(Category.category == category.category).first():
         raise HTTPException(status_code=404, detail="Category already exist")
     
-    new_category = Category(category=category)
+    new_category = Category(category=category.category)
     db.add(new_category)
     db.commit()
     db.refresh(new_category)

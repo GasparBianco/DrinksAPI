@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from .models import Glass
-from .schemas import GlassBase, GlassList
+from .schemas import GlassBase, GlassList, GlassCreate
 from .db_config import *
 from sqlalchemy.orm import Session
 
@@ -22,11 +22,11 @@ async def getAllGlasses(db: Session = Depends(get_db)):
     return {'glasses': glasses}
 
 @router.post("/glass/", response_model=GlassBase, status_code=201)
-async def createGlass(glass: str, db: Session = Depends(get_db)):
-    if db.query(Glass).filter(Glass.glass == glass).first():
+async def createGlass(glass: GlassCreate, db: Session = Depends(get_db)):
+    if db.query(Glass).filter(Glass.glass == glass.glass).first():
         raise HTTPException(status_code=404, detail="Glass already exist")
     
-    new_glass = Glass(glass=glass)
+    new_glass = Glass(glass=glass.glass)
     db.add(new_glass)
     db.commit()
     db.refresh(new_glass)

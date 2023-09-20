@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from .models import Cocktail, Association
+from .models import Cocktail, Ingredient, Glass, Category, Association
 from .schemas import CocktailBase, CocktailList, CocktailDB
 from .db_config import *
 from sqlalchemy.orm import Session
@@ -41,11 +41,34 @@ async def getCocktailByID(page:int, db: Session = Depends(get_db)):
 
 @router.post("/cocktail/", response_model=CocktailBase, status_code=201)
 async def createCocktail(cocktail: CocktailDB, db: Session = Depends(get_db)):
+
     if db.query(Cocktail).filter(Cocktail.cocktail == cocktail.cocktail).first():
-        raise HTTPException(status_code=404, detail="Cocktail already exist")    
-    new_cocktail = Cocktail(**cocktail.dict())
+        raise HTTPException(status_code=404, detail="Cocktail already exist")
+    if not db.query(Glass).filter(Glass.id == cocktail.glass.id).first():
+        raise HTTPException(status_code=404, detail="Glass ID don't exist")
+    if not db.query(Category).filter(Category.id == cocktail.category.id).first():
+        raise HTTPException(status_code=404, detail="Category ID don't exist")
+    for ingredient in cocktail.ingredients:
+        if not db.query(Ingredient).filter(Ingredient.id == ingredient.ingredient.id).first():
+            raise HTTPException(status_code=404, detail=f"ID ingredient {ingredient.id} don't exist")
+        
+        
+    new_cocktail = Cocktail(cocktail = cocktail.cocktail,
+                            id_category = cocktail.category.id,
+                            id_glass = cocktail.glass.id,
+                            instruction = cocktail.instruction)
     db.add(new_cocktail)
+    db.flush()
     db.commit()
+    db.refresh(new_cocktail)
+
+    for ingredient in cocktail.ingredients:
+        new_ingredient = Association(id_cocktail = new_cocktail.id,
+                                    id_ingredient = ingredient.ingredient.id,
+                                    measure = ingredient.measure)
+        db.add(new_ingredient)
+        db.commit()
+        
     db.refresh(new_cocktail)
     return new_cocktail
 

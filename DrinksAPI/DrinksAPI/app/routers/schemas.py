@@ -5,12 +5,17 @@ from typing import List, Optional
 class GlassBase(BaseModel):
     id: int
     
-
     class Config:
         orm_mode = True
 
-class GlassFull(GlassBase):
+class GlassCreate(BaseModel):
     glass: str
+    
+    class Config:
+        orm_mode = True
+
+class GlassFull(GlassBase, GlassCreate):
+    pass
 
 class GlassList(BaseModel):
     glasses: List[GlassFull] = []
@@ -22,8 +27,14 @@ class CategoryBase(BaseModel):
     class Config:
         orm_mode = True
 
-class CategoryFull(CategoryBase):
-    category:str
+class CategoryCreate(BaseModel):
+    category: str
+
+    class Config:
+        orm_mode = True
+
+class CategoryFull(CategoryBase, CategoryCreate):
+    pass
 
 class CategoryList(BaseModel):
     categories: List[CategoryBase] = []

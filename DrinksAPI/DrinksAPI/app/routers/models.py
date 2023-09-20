@@ -31,9 +31,9 @@ class Cocktail(Base):
     id = Column(Integer, primary_key=True)
     cocktail = Column(String(255))
     instruction = Column(String(255))
-    id_glass = Column(Integer, ForeignKey('glasses.id'))
-    id_category = Column(Integer, ForeignKey('categories.id'))
+    id_glass = Column(Integer, ForeignKey('glasses.id', ondelete="SET NULL"))
+    id_category = Column(Integer, ForeignKey('categories.id', ondelete="SET NULL"))
     glass = relationship('Glass')
     category = relationship('Category', backref='cocktails')
-    ingredients = relationship('Association')
+    ingredients = relationship('Association', cascade="all, delete-orphan")
 
