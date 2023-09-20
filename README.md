@@ -12,5 +12,5 @@ Toda la documentacion en Swagger de DrinksAPI se puede encontrar en la url raiz 
 
 ## DataBase
 
-La base de datos fue generada en el siguiente repositorio [CLick Aqui](https://github.com/GasparBianco/Cocktails_database)
+La base de datos fue generada en el siguiente repositorio [Click Aqui](https://github.com/GasparBianco/Cocktails_database)
 
