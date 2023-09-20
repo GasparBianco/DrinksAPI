@@ -47,7 +47,7 @@ async def deleteGlassByName(glass: str, db: Session = Depends(get_db)):
         id = int(glass)
         return deleteGlassById(id, db)
     except:
-        Exception
+        ValueError
 
 
     glass = db.query(Glass).filter(Glass.glass == glass).first()

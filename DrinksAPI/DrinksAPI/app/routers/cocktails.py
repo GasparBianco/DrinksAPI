@@ -68,7 +68,7 @@ async def createCocktail(cocktail: CocktailDB, db: Session = Depends(get_db)):
                                     measure = ingredient.measure)
         db.add(new_ingredient)
         db.commit()
-        
+
     db.refresh(new_cocktail)
     return new_cocktail
 
@@ -84,13 +84,12 @@ def deleteCocktailById(id: int, db: Session):
 @router.delete("/cocktail/{cocktail}")
 async def deleteCocktailByName(cocktail: str, db: Session = Depends(get_db)):
     try:
-        id = int(cocktail)
-        return deleteCocktailById(id, db)
+        id = int(cocktail)     
+        return deleteCocktailById(id, db)   
     except:
-        Exception
+        ValueError      
 
-
-    category = db.query(Cocktail).filter(Cocktail.cocktail == cocktail).first()
+    cocktail = db.query(Cocktail).filter(Cocktail.cocktail == cocktail).first()
     if cocktail is None:
         raise HTTPException(status_code=404, detail="Cocktail not found")
     

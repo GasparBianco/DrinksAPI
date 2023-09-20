@@ -48,7 +48,7 @@ async def deleteCategoryByName(category: str, db: Session = Depends(get_db)):
         id = int(category)
         return deleteCategoryById(id, db)
     except:
-        Exception
+        ValueError
 
 
     category = db.query(Category).filter(Category.category == category).first()

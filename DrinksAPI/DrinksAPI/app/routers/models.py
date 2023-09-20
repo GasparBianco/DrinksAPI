@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Table
 from .db_config import Base
-from sqlalchemy.orm import relationship, mapped_column, Mapped
-from typing import Optional, List
+from sqlalchemy.orm import relationship
+
 
 class Glass(Base):
     __tablename__ = "glasses"
@@ -36,4 +36,3 @@ class Cocktail(Base):
     glass = relationship('Glass')
     category = relationship('Category', backref='cocktails')
     ingredients = relationship('Association', cascade="all, delete-orphan")
-

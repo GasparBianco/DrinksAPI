@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from .models import Ingredient
+from .models import Ingredient, Association
 from .schemas import IngredientBase, IngredientList
 from .db_config import *
 from sqlalchemy.orm import Session
@@ -46,6 +46,8 @@ def deleteIngredientById(id: int, db: Session):
     ingredient = db.query(Ingredient).filter(Ingredient.id == id).first()
     if ingredient is None:
         raise HTTPException(status_code=404, detail="Ingredient not found")
+    if db.query(Association).filter(Association.id_ingredient == ingredient.id):
+        raise HTTPException(status_code=404, detail="Ingrdient in use, cant delete")
     
     db.delete(ingredient)
     db.commit()
@@ -57,13 +59,16 @@ async def deleteIngredientByName(ingredient: str, db: Session = Depends(get_db))
         id = int(ingredient)
         return deleteIngredientById(id, db)
     except:
-        Exception
-
+        ValueError
 
     ingredient = db.query(Ingredient).filter(Ingredient.ingredient == ingredient).first()
     if ingredient is None:
         raise HTTPException(status_code=404, detail="Ingrdient not found")
     
+    if db.query(Association).filter(Association.id_ingredient == ingredient.id):
+        raise HTTPException(status_code=404, detail="Ingrdient in use, cant delete")
+    
     db.delete(ingredient)
     db.commit()
+
     return {"detail": "Ingredient deleted successfully"}
