@@ -10,3 +10,7 @@ DrinksAPI basicamente es API donde se puede consultar informacion de distintas b
 
 Toda la documentacion en Swagger de DrinksAPI se puede encontrar en la url raiz o en /docs/
 
+## DataBase
+
+La base de datos fue generada en el siguiente repositorio [CLick Aqui](https://github.com/GasparBianco/Cocktails_database)
+
